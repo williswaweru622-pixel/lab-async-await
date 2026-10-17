@@ -39,16 +39,27 @@ global.Node = dom.window.Node;
 global.Text = dom.window.Text;
 global.XMLHttpRequest = dom.window.XMLHttpRequest;
 
+const waitForPosts = async () => {
+  const deadline = Date.now() + 5000;
+
+  while (Date.now() < deadline) {
+    if (document.querySelector('#post-list li')) return;
+    await new Promise(resolve => setTimeout(resolve, 25));
+  }
+
+  throw new Error('Posts were not rendered before the timeout');
+};
+
 // Sample test suite for JavaScript event handling
 describe('Asynchronous Fetching ', () => {
   it('should fetch to external api and add information to page', async() => {
-    await new Promise(resolve => setTimeout(resolve, 200)); 
+    await waitForPosts();
     let postDisplay = document.querySelector("#post-list")
     expect(postDisplay.innerHTML).to.include('sunt aut')
     
   })
   it('should create an h1 and p element to add', async() => {
-    await new Promise(resolve => setTimeout(resolve, 200)); 
+    await waitForPosts();
     let h1 = document.querySelector("h1")
     let p = document.querySelector("p")
     expect(h1.textContent).to.include("sunt aut facere repellat")
